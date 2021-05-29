@@ -4,23 +4,11 @@ import requests from './request.js';
 import './App.css';
 import Nav from './components/Nav.js';
 import Banner from './components/Banner.js';
-import Alert from './components/Alert';
 
 function App() {
-   const [alert, setAlert] = useState(false);
-   const [content, setContent] = useState('');
-   const show = (text) => {
-      setAlert(true);
-      setContent(text);
-      setTimeout(() => {
-         setAlert(false);
-         setContent('');
-      }, 2000);
-   };
    return (
       <div className="App">
          <Nav />
-         {alert && <Alert text={content} />}
          <Banner />
          <Row title="Trending" fetchUrl={requests.fetchTrending} isLargeRow />
          <Row title="Top Rated" fetchUrl={requests.fetchTopRated} />

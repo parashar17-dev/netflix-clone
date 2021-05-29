@@ -5,10 +5,11 @@ import '../Css-files/Row.css';
 import movieTrailer from 'movie-trailer';
 import Youtube from 'react-youtube';
 
-function Row({ title, fetchUrl, isLargeRow, show }) {
-   // Movie variable state:
+function Row({ title, fetchUrl, isLargeRow }) {
+   // Variable states:
    const [movies, setMovies] = useState([]);
    const [trailerUrl, setTrailer] = useState('');
+   const [text, setText] = useState('');
 
    //Snippet of code that runs on a specific condition/Variable:
    // if the second argument of function is empty it only runs once
@@ -23,6 +24,8 @@ function Row({ title, fetchUrl, isLargeRow, show }) {
       };
       fetchData();
    }, [fetchUrl]);
+
+   // Options for youtube Trailer:
    const opts = {
       height: '400',
       width: '100%',
@@ -30,8 +33,19 @@ function Row({ title, fetchUrl, isLargeRow, show }) {
          autoplay: 1,
       },
    };
+
+   const show = (x) => {
+      if (x) setText('Click again to stop the trailer');
+      else setText('Trailer not Available');
+
+      setTimeout(() => {
+         setText('');
+      }, 2000);
+   };
+
+   // Handing Click event on movie images
+   // To show the Trailer of that movie
    const handleClick = (movie) => {
-      console.log(movie);
       if (trailerUrl !== '') setTrailer('');
       else {
          movieTrailer(
@@ -41,20 +55,29 @@ function Row({ title, fetchUrl, isLargeRow, show }) {
                movie?.original_title
          )
             .then((url) => {
+               show(true);
                const urlPrarams = new URLSearchParams(new URL(url).search);
                setTrailer(urlPrarams.get('v'));
             })
             .catch((error) => {
                console.log(error);
+               show(false);
             });
       }
    };
 
    //Base url for poster image of movies:
    const BaseUrl = 'https://image.tmdb.org/t/p/original/';
+
    return (
       <div className="row">
          <h1 className="row-title">{title}</h1>
+         {text && (
+            <div className="alert">
+               <i className="fas fa-info-circle"></i>
+               {text}
+            </div>
+         )}
          <div className="row_posters">
             {movies.map((movie) => (
                <img
